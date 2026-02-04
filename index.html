@@ -1,1 +1,364 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>probabilida y estadistica</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-dark: #1a1a2e;
+            --bg-panel: #16213e;
+            --accent-pink: #e94560;
+            --accent-cyan: #0f3460;
+            --text-light: #eaeaea;
+            --neon-blue: #4cc9f0;
+            --neon-green: #2ecc71;
+            --neon-purple: #9b59b6;
+        }
 
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            margin: 0;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* --- SIDEBAR DE NAVEGACIÓN --- */
+        .sidebar {
+            width: 250px;
+            background-color: #0f3460;
+            padding: 20px;
+            position: fixed;
+            height: 100%;
+            border-right: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .brand {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--neon-blue);
+            margin-bottom: 40px;
+            text-align: center;
+            letter-spacing: 2px;
+            border-bottom: 2px solid var(--neon-blue);
+            padding-bottom: 15px;
+        }
+
+        .nav-links {
+            list-style: none;
+            padding: 0;
+        }
+
+        .nav-links li { margin-bottom: 15px; }
+
+        .nav-links a {
+            display: block;
+            padding: 15px;
+            color: rgba(255,255,255,0.7);
+            text-decoration: none;
+            border-radius: 8px;
+            transition: 0.3s;
+            font-weight: bold;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            background-color: var(--e94560);
+            color: white;
+            box-shadow: 0 0 10px rgba(233, 69, 96, 0.5);
+            padding-left: 20px; /* Efecto de movimiento */
+        }
+
+        /* Colores específicos para hover */
+        .link-disc:hover { background-color: var(--neon-purple) !important; }
+        .link-cont:hover { background-color: var(--neon-green) !important; }
+        .link-cual:hover { background-color: var(--neon-blue) !important; }
+
+        /* --- CONTENIDO PRINCIPAL --- */
+        .main-content {
+            margin-left: 250px;
+            padding: 40px;
+            width: 100%;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            margin: 0 0 10px 0;
+        }
+        
+        header p { color: #888; margin-bottom: 50px; }
+
+        section {
+            background-color: var(--bg-panel);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 50px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        h2 {
+            border-left: 5px solid;
+            padding-left: 15px;
+            margin-top: 0;
+        }
+
+        #discretos h2 { border-color: var(--neon-purple); color: var(--neon-purple); }
+        #continuos h2 { border-color: var(--neon-green); color: var(--neon-green); }
+        #cualitativos h2 { border-color: var(--neon-blue); color: var(--neon-blue); }
+
+        .data-description {
+            background: rgba(0,0,0,0.2);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+            color: #ccc;
+        }
+
+        /* --- ESTILOS DE TABLAS (Dark Mode) --- */
+        .table-container {
+            overflow-x: auto;
+            margin-top: 20px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 10px;
+            padding: 10px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-family: 'Roboto Mono', monospace; /* Fuente tipo código */
+            font-size: 0.85rem;
+        }
+
+        th {
+            text-align: left;
+            padding: 15px;
+            color: white;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            background: linear-gradient(90deg, rgba(255,255,255,0.05), transparent);
+        }
+
+        td {
+            padding: 12px 15px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            color: #bbb;
+        }
+
+        /* Colores de acento en tablas */
+        #discretos th { color: var(--neon-purple); }
+        #continuos th { color: var(--neon-green); }
+        #cualitativos th { color: var(--neon-blue); }
+
+        tbody tr:hover {
+            background-color: rgba(255,255,255,0.03);
+            color: white;
+        }
+
+        .total-row td {
+            font-weight: bold;
+            color: white;
+            background-color: rgba(255,255,255,0.1);
+            border-top: 2px solid white;
+        }
+
+        /* Barras de progreso visuales en tabla */
+        .progress-bar {
+            height: 6px;
+            background: #333;
+            border-radius: 3px;
+            overflow: hidden;
+            width: 100%;
+            max-width: 100px;
+            display: inline-block;
+        }
+        .fill { height: 100%; display: block; }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            body { flex-direction: column; }
+            .sidebar { width: 100%; height: auto; position: relative; padding: 10px; box-sizing: border-box; }
+            .main-content { margin-left: 0; padding: 20px; }
+            .nav-links { display: flex; gap: 10px; overflow-x: auto; }
+            .nav-links a { padding: 10px; font-size: 0.8rem; white-space: nowrap; }
+        }
+    </style>
+</head>
+<body>
+
+    <aside class="sidebar">
+        <div class="brand">PROBABILIDAD<br>Y ESTADISTICA</div>
+        <ul class="nav-links">
+            <li><a href="#discretos" class="link-disc">01. DISCRETOS</a></li>
+            <li><a href="#continuos" class="link-cont">02. CONTINUOS</a></li>
+            <li><a href="#cualitativos" class="link-cual">03. CUALITATIVOS</a></li>
+        </ul>
+    </aside>
+
+    <main class="main-content">
+        <header>
+            <h1>CUALITATIVOS Y CUANTITATIVOS</h1>
+            <p>Visualización de nuevos conjuntos de datos (n=100) | Sistema v2.0</p>
+        </header>
+
+        <section id="discretos">
+            <h2>01. Datos Discretos: Reclamos</h2>
+            <div class="data-description">
+                <strong>Variable:</strong> Número de quejas de clientes recibidas por día.<br>
+                <strong>Contexto:</strong> Monitoreo de un Call Center durante 100 días hábiles.<br>
+                <strong>Tipo:</strong> Cuantitativo Discreto (Valores enteros pequeños 0-6).
+            </div>
+
+            <h3>> Matriz de Datos (Log)</h3>
+            <div class="table-container">
+                <table>
+                    <tbody>
+                        <tr><td>2</td><td>1</td><td>0</td><td>3</td><td>1</td><td>0</td><td>4</td><td>2</td><td>1</td><td>0</td></tr>
+                        <tr><td>0</td><td>0</td><td>1</td><td>2</td><td>5</td><td>1</td><td>0</td><td>2</td><td>3</td><td>1</td></tr>
+                        <tr><td>1</td><td>3</td><td>0</td><td>2</td><td>0</td><td>1</td><td>4</td><td>1</td><td>0</td><td>2</td></tr>
+                        <tr><td>6</td><td>2</td><td>1</td><td>0</td><td>3</td><td>2</td><td>1</td><td>0</td><td>2</td><td>1</td></tr>
+                        <tr><td>2</td><td>1</td><td>0</td><td>5</td><td>2</td><td>0</td><td>1</td><td>3</td><td>2</td><td>0</td></tr>
+                        <tr><td>0</td><td>4</td><td>1</td><td>2</td><td>1</td><td>0</td><td>2</td><td>0</td><td>3</td><td>1</td></tr>
+                        <tr><td>1</td><td>2</td><td>3</td><td>0</td><td>1</td><td>2</td><td>0</td><td>4</td><td>1</td><td>0</td></tr>
+                        <tr><td>0</td><td>1</td><td>2</td><td>1</td><td>5</td><td>0</td><td>3</td><td>2</td><td>1</td><td>2</td></tr>
+                        <tr><td>2</td><td>0</td><td>1</td><td>4</td><td>2</td><td>3</td><td>0</td><td>1</td><td>2</td><td>0</td></tr>
+                        <tr><td>3</td><td>1</td><td>0</td><td>2</td><td>1</td><td>0</td><td>2</td><td>5</td><td>1</td><td>2</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h3>> Análisis de Frecuencias</h3>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Reclamos/Día</th>
+                            <th>Frecuencia ($f_i$)</th>
+                            <th>% Relativo</th>
+                            <th>Indicador Visual</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>0 Reclamos</td><td>28</td><td>28%</td><td><div class="progress-bar"><span class="fill" style="width:28%; background:var(--neon-purple)"></span></div></td></tr>
+                        <tr><td>1 Reclamo</td><td>30</td><td>30%</td><td><div class="progress-bar"><span class="fill" style="width:30%; background:var(--neon-purple)"></span></div></td></tr>
+                        <tr><td>2 Reclamos</td><td>22</td><td>22%</td><td><div class="progress-bar"><span class="fill" style="width:22%; background:var(--neon-purple)"></span></div></td></tr>
+                        <tr><td>3 Reclamos</td><td>10</td><td>10%</td><td><div class="progress-bar"><span class="fill" style="width:10%; background:var(--neon-purple)"></span></div></td></tr>
+                        <tr><td>4 Reclamos</td><td>5</td><td>5%</td><td><div class="progress-bar"><span class="fill" style="width:5%; background:var(--neon-purple)"></span></div></td></tr>
+                        <tr><td>5 Reclamos</td><td>4</td><td>4%</td><td><div class="progress-bar"><span class="fill" style="width:4%; background:var(--neon-purple)"></span></div></td></tr>
+                        <tr><td>6 Reclamos</td><td>1</td><td>1%</td><td><div class="progress-bar"><span class="fill" style="width:1%; background:var(--neon-purple)"></span></div></td></tr>
+                        <tr class="total-row"><td>TOTAL</td><td>100</td><td>100%</td><td>---</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="continuos">
+            <h2>02. Datos Continuos: Latencia</h2>
+            <div class="data-description">
+                <strong>Variable:</strong> Tiempo de respuesta del servidor (Ping).<br>
+                <strong>Unidad:</strong> Milisegundos (ms) con dos decimales.<br>
+                <strong>Tipo:</strong> Cuantitativo Continuo (Rango medido: 120ms - 190ms).
+            </div>
+
+            <h3>> Matriz de Datos (Ping Test)</h3>
+            <div class="table-container">
+                <table>
+                    <tbody>
+                        <tr><td>124.50</td><td>132.10</td><td>145.88</td><td>120.30</td><td>167.45</td><td>138.20</td><td>155.60</td><td>129.90</td><td>141.15</td><td>133.33</td></tr>
+                        <tr><td>150.25</td><td>142.80</td><td>136.55</td><td>128.40</td><td>175.10</td><td>148.90</td><td>131.20</td><td>159.75</td><td>143.60</td><td>139.05</td></tr>
+                        <tr><td>135.40</td><td>162.30</td><td>127.85</td><td>144.50</td><td>152.00</td><td>130.65</td><td>140.90</td><td>126.70</td><td>168.20</td><td>151.45</td></tr>
+                        <tr><td>147.10</td><td>134.90</td><td>158.50</td><td>122.15</td><td>145.30</td><td>137.75</td><td>163.40</td><td>149.20</td><td>132.80</td><td>125.60</td></tr>
+                        <tr><td>153.80</td><td>141.40</td><td>130.25</td><td>172.90</td><td>129.50</td><td>146.70</td><td>138.40</td><td>156.10</td><td>135.90</td><td>143.25</td></tr>
+                        <tr><td>139.60</td><td>165.20</td><td>124.80</td><td>148.15</td><td>133.70</td><td>151.90</td><td>127.30</td><td>140.50</td><td>160.80</td><td>136.25</td></tr>
+                        <tr><td>145.95</td><td>131.50</td><td>155.30</td><td>123.60</td><td>142.45</td><td>169.10</td><td>134.20</td><td>150.80</td><td>128.95</td><td>147.50</td></tr>
+                        <tr><td>158.15</td><td>137.40</td><td>143.90</td><td>126.35</td><td>154.60</td><td>132.70</td><td>161.50</td><td>146.20</td><td>121.80</td><td>139.30</td></tr>
+                        <tr><td>130.90</td><td>152.75</td><td>140.10</td><td>166.80</td><td>135.20</td><td>129.45</td><td>149.60</td><td>157.30</td><td>133.90</td><td>144.70</td></tr>
+                        <tr><td>148.50</td><td>125.20</td><td>138.80</td><td>164.10</td><td>141.80</td><td>153.10</td><td>131.95</td><td>122.75</td><td>145.05</td><td>136.65</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h3>> Frecuencias Agrupadas</h3>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Intervalo (ms)</th>
+                            <th>Marca ($x_i$)</th>
+                            <th>Frecuencia</th>
+                            <th>% Relativo</th>
+                            <th>Indicador Visual</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>[120 - 130)</td><td>125.0</td><td>18</td><td>18%</td><td><div class="progress-bar"><span class="fill" style="width:18%; background:var(--neon-green)"></span></div></td></tr>
+                        <tr><td>[130 - 140)</td><td>135.0</td><td>25</td><td>25%</td><td><div class="progress-bar"><span class="fill" style="width:25%; background:var(--neon-green)"></span></div></td></tr>
+                        <tr><td>[140 - 150)</td><td>145.0</td><td>27</td><td>27%</td><td><div class="progress-bar"><span class="fill" style="width:27%; background:var(--neon-green)"></span></div></td></tr>
+                        <tr><td>[150 - 160)</td><td>155.0</td><td>18</td><td>18%</td><td><div class="progress-bar"><span class="fill" style="width:18%; background:var(--neon-green)"></span></div></td></tr>
+                        <tr><td>[160 - 170)</td><td>165.0</td><td>9</td><td>9%</td><td><div class="progress-bar"><span class="fill" style="width:9%; background:var(--neon-green)"></span></div></td></tr>
+                        <tr><td>[170 - 180]</td><td>175.0</td><td>3</td><td>3%</td><td><div class="progress-bar"><span class="fill" style="width:3%; background:var(--neon-green)"></span></div></td></tr>
+                        <tr class="total-row"><td>TOTAL</td><td>---</td><td>100</td><td>100%</td><td>---</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="cualitativos">
+            <h2>03. Datos Cualitativos: Pagos</h2>
+            <div class="data-description">
+                <strong>Variable:</strong> Método de pago utilizado.<br>
+                <strong>Contexto:</strong> Transacciones en una tienda Tech online.<br>
+                <strong>Tipo:</strong> Cualitativo Nominal (Categorías no ordenadas).
+            </div>
+
+            <h3>> Matriz de Datos (Transacciones)</h3>
+            <div class="table-container">
+                <table>
+                    <tbody>
+                        <tr><td>Tarjeta</td><td>App</td><td>Efectivo</td><td>Tarjeta</td><td>Cripto</td><td>Tarjeta</td><td>App</td><td>Tarjeta</td><td>App</td><td>Tarjeta</td></tr>
+                        <tr><td>Efectivo</td><td>Tarjeta</td><td>App</td><td>Tarjeta</td><td>App</td><td>Tarjeta</td><td>Efectivo</td><td>Tarjeta</td><td>App</td><td>Cripto</td></tr>
+                        <tr><td>App</td><td>Tarjeta</td><td>Tarjeta</td><td>Efectivo</td><td>Tarjeta</td><td>App</td><td>Tarjeta</td><td>Cripto</td><td>Tarjeta</td><td>App</td></tr>
+                        <tr><td>Tarjeta</td><td>App</td><td>Efectivo</td><td>Tarjeta</td><td>App</td><td>Tarjeta</td><td>Efectivo</td><td>Tarjeta</td><td>App</td><td>Tarjeta</td></tr>
+                        <tr><td>App</td><td>Tarjeta</td><td>Tarjeta</td><td>Cripto</td><td>Efectivo</td><td>Tarjeta</td><td>App</td><td>Tarjeta</td><td>Efectivo</td><td>Tarjeta</td></tr>
+                        <tr><td>Tarjeta</td><td>Efectivo</td><td>App</td><td>Tarjeta</td><td>App</td><td>Tarjeta</td><td>Cripto</td><td>App</td><td>Tarjeta</td><td>App</td></tr>
+                        <tr><td>Efectivo</td><td>Tarjeta</td><td>App</td><td>Tarjeta</td><td>Efectivo</td><td>App</td><td>Tarjeta</td><td>Tarjeta</td><td>App</td><td>Tarjeta</td></tr>
+                        <tr><td>App</td><td>Tarjeta</td><td>Cripto</td><td>App</td><td>Tarjeta</td><td>Efectivo</td><td>Tarjeta</td><td>App</td><td>Tarjeta</td><td>Efectivo</td></tr>
+                        <tr><td>Tarjeta</td><td>App</td><td>Tarjeta</td><td>Efectivo</td><td>Tarjeta</td><td>App</td><td>Tarjeta</td><td>Efectivo</td><td>App</td><td>Tarjeta</td></tr>
+                        <tr><td>Cripto</td><td>Tarjeta</td><td>App</td><td>Tarjeta</td><td>App</td><td>Tarjeta</td><td>Efectivo</td><td>App</td><td>Tarjeta</td><td>App</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h3>> Métricas por Categoría</h3>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Método de Pago</th>
+                            <th>Transacciones ($f_i$)</th>
+                            <th>Share (%)</th>
+                            <th>Visualización</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>💳 Tarjeta</td><td>45</td><td>45%</td><td><div class="progress-bar"><span class="fill" style="width:45%; background:var(--neon-blue)"></span></div></td></tr>
+                        <tr><td>📱 App Movil</td><td>30</td><td>30%</td><td><div class="progress-bar"><span class="fill" style="width:30%; background:var(--neon-blue)"></span></div></td></tr>
+                        <tr><td>💵 Efectivo</td><td>18</td><td>18%</td><td><div class="progress-bar"><span class="fill" style="width:18%; background:var(--neon-blue)"></span></div></td></tr>
+                        <tr><td>₿ Cripto</td><td>7</td><td>7%</td><td><div class="progress-bar"><span class="fill" style="width:7%; background:var(--neon-blue)"></span></div></td></tr>
+                        <tr class="total-row"><td>TOTAL</td><td>100</td><td>100%</td><td>---</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+    </main>
+
+</body>
+</html>
