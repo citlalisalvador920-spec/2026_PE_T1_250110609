@@ -1,1 +1,1 @@
-# 2026_PE_T1_250110609
+Este proyecto aborda la clasificación de datos cuantitativos (numéricos), los cuales se dividen en dos categorías principales: datos discretos, que se obtienen mediante conteo, y datos continuos, que se determinan a través de medición .# 2026_PE_T1_250110609
